@@ -43,6 +43,19 @@ namespace USFTRestToCSVService
             {
                 using(StreamWriter writer = new StreamWriter(FileLocation, false))
                 {
+                    await writer.WriteLineAsync(string.Format(format,
+                        "Serial",
+                        "Name",
+                        "Latitude",
+                        "Longitude",
+                        "Heading",
+                        "Velocity",
+                        "Satellites",
+                        "Ignition",
+                        "LastMoved",
+                        "LastUpdated",
+                        "OutputFlags"));
+
                     foreach(var entry in results)
                     {
                         await writer.WriteLineAsync(string.Format(format,

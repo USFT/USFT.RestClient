@@ -199,6 +199,11 @@
             "AssemblyAsmDisplayName" = "8:Newtonsoft.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
+                    "_363170DB75A7DA3360103C78D4C9F03C"
+                    {
+                    "Name" = "8:Newtonsoft.Json.dll"
+                    "Attributes" = "3:512"
+                    }
                 }
             "SourcePath" = "8:Newtonsoft.Json.dll"
             "TargetName" = "8:"
@@ -225,6 +230,11 @@
             "AssemblyAsmDisplayName" = "8:USFT.RestClient.v1, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
+                    "_D7F696254984C9040686C714446AF85D"
+                    {
+                    "Name" = "8:USFT.RestClient.v1.dll"
+                    "Attributes" = "3:512"
+                    }
                 }
             "SourcePath" = "8:USFT.RestClient.v1.dll"
             "TargetName" = "8:"
@@ -300,15 +310,15 @@
         {
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:USFT.RestClient.RestToCSVService"
-        "ProductCode" = "8:{71C0EF4A-8670-4388-96EB-8BEDAECDEF78}"
-        "PackageCode" = "8:{717FA8FA-172C-47C3-B2B3-EF073B106A8C}"
+        "ProductCode" = "8:{ABACE8FA-D47A-404B-9DF6-08A2ED04C1F5}"
+        "PackageCode" = "8:{4ACAF436-EC89-4DDF-9774-F0D20B4B6E9E}"
         "UpgradeCode" = "8:{F64DE60D-5F14-40FD-BF7B-C6BE77EEA989}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
         "RemovePreviousVersions" = "11:FALSE"
         "DetectNewerInstalledVersion" = "11:TRUE"
         "InstallAllUsers" = "11:FALSE"
-        "ProductVersion" = "8:1.0.0"
+        "ProductVersion" = "8:1.0.1"
         "Manufacturer" = "8:US Fleet Tracking"
         "ARPHELPTELEPHONE" = "8:"
         "ARPHELPLINK" = "8:"

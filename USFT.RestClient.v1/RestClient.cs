@@ -773,7 +773,7 @@ namespace USFT.RestClient.v1
                 }
                 else if(Authentication == AuthenticationMode.Basic)
                 {
-                    AuthString = Convert.ToBase64String(Encoding.ASCII.GetBytes(string.Format("Basic {0}:{1}", userName, privateKey)));
+                    AuthString = "Basic " + Convert.ToBase64String(Encoding.ASCII.GetBytes(string.Format("{0}:{1}", userName, privateKey)));
                 }
                 else
                 {
