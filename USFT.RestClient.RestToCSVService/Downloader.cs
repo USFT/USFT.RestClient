@@ -81,7 +81,7 @@ namespace USFTRestToCSVService
                 ConfigurationManager.RefreshSection("appSettings");
             }
 
-            var client = new RestClient(UserName, APIKey);
+            var client = new UsftClient(UserName, APIKey);
             DateTime lastRetrieval;
             TimeSpan betweenRetrievals = TimeSpan.FromSeconds(SecondsBetweenRetrievals);
             while(working)

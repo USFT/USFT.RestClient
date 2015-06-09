@@ -13,7 +13,7 @@ namespace USFT.RestClient.v1
     /// <summary>
     /// Communicates with USFT servers through synchronous HTTP calls
     /// </summary>
-    public class RestClient
+    public class UsftClient
     {
         /// <summary>
         /// Proxy to use for all HttpWebRequests
@@ -138,7 +138,7 @@ namespace USFT.RestClient.v1
         /// </summary>
         /// <param name="UserName">User Name for your Account</param>
         /// <param name="privateKey">Private Token for your Account</param>
-        public RestClient(string UserName, string PrivateKeyOrPassword, AuthenticationMode AuthMode = AuthenticationMode.USFT)
+        public UsftClient(string UserName, string PrivateKeyOrPassword, AuthenticationMode AuthMode = AuthenticationMode.USFT)
         {
             this.userName = UserName;
             this.privateKey = PrivateKeyOrPassword;
@@ -152,7 +152,7 @@ namespace USFT.RestClient.v1
         /// <param name="UserName">User Name for your Account</param>
         /// <param name="privateKey">Private Token for your Account</param>
         /// <param name="UriBase">Base URI for the service</param>
-        public RestClient(string UserName, string PrivateKey, string UriBase, AuthenticationMode AuthMode = AuthenticationMode.USFT)
+        public UsftClient(string UserName, string PrivateKey, string UriBase, AuthenticationMode AuthMode = AuthenticationMode.USFT)
         {
             userName = UserName;
             privateKey = PrivateKey;
