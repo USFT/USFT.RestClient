@@ -375,8 +375,12 @@ namespace USFT.RestClient.v1
         /// This provides the date the device was Activated, if known.
         /// </summary>
         public DateTime? ActivationDate;
+        /// <summary>
+        /// This is the relative URL of the device's icon.
+        /// </summary>
+        public string IconPath;
         public Device() { }
-        public Device(ulong AccountId, ulong DeviceId, string DeviceName, string FlagColor, string TextColor, DateTime? ActivationDate = null)
+        public Device(ulong AccountId, ulong DeviceId, string DeviceName, string FlagColor, string TextColor, DateTime? ActivationDate = null, string IconPath = null)
         {
             this.AccountId = AccountId;
             this.DeviceId = DeviceId;
@@ -384,6 +388,7 @@ namespace USFT.RestClient.v1
             this.FlagColor = FlagColor;
             this.TextColor = TextColor;
             this.ActivationDate = ActivationDate;
+            this.IconPath = IconPath;
         }
     }
 
