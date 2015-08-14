@@ -655,7 +655,7 @@ namespace USFT.RestClient.v1
             if (DeviceIds == null || DeviceIds.Count() == 0)
                 return RetrieveResponse<List<DeviceLocation>>(string.Format(uriPath_ImmediateReport, "history24") + AppendAccount(AsAccount), verb_Read);
             else
-                return RetrieveResponse<List<DeviceLocation>>(string.Format(uriPath_ImmediateReport, "history24") + AppendAccount(AsAccount), "POST", DeviceIds);
+                return RetrieveResponse<List<DeviceLocation>>(string.Format(uriPath_ImmediateReport, "history24") + AppendAccount(AsAccount), "POST", string.Join(",", DeviceIds));
         }
 
         public List<DeviceLocation> GetHistoryFromTo(List<ulong> DeviceIds = null, DateTime? From = null, DateTime? To = null, uint? Interval = null, Account AsAccount = null)
@@ -669,7 +669,7 @@ namespace USFT.RestClient.v1
             if (DeviceIds == null || DeviceIds.Count() == 0)
                 return RetrieveResponse<List<DeviceLocation>>(string.Format(uriPath_ImmediateReportFromTo, f, t, Interval) + AppendAccount(AsAccount, true), verb_Read);
             else
-                return RetrieveResponse<List<DeviceLocation>>(string.Format(uriPath_ImmediateReportFromTo, f, t, Interval) + AppendAccount(AsAccount, true), "POST", DeviceIds);
+                return RetrieveResponse<List<DeviceLocation>>(string.Format(uriPath_ImmediateReportFromTo, f, t, Interval) + AppendAccount(AsAccount, true), "POST", string.Join(",", DeviceIds));
 
         }
         #endregion
