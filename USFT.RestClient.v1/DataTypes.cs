@@ -579,6 +579,10 @@ namespace USFT.RestClient.v1
         /// This contains raw output information for devices with PTO/Ignition/Panic capabilities.
         /// </summary>
         public uint OutputFlags;
+        /// <summary>
+        /// This contains the power level as reported by the device, usually 0-100 for devices capable of reporting power.
+        /// </summary>
+        public int Power;
         public DeviceLocation() { }
         public DeviceLocation(ulong AccountId
                             , ulong DeviceId
@@ -591,7 +595,8 @@ namespace USFT.RestClient.v1
                             , int Ignition
                             , DateTime LastUpdated
                             , DateTime? LastMoved = null
-                            , uint OutputFlags = 0)
+                            , uint OutputFlags = 0
+                            , int Power = 0)
         {
             this.AccountId = AccountId;
             this.DeviceId = DeviceId;
@@ -605,6 +610,7 @@ namespace USFT.RestClient.v1
             this.LastMoved = LastMoved;
             this.LastUpdated = LastUpdated;
             this.OutputFlags = OutputFlags;
+            this.Power = Power;
         }
 
     }
