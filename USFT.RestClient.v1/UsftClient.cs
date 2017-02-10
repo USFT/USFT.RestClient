@@ -445,7 +445,7 @@
                   $"&startutc={WebUtility.UrlEncode(startUtc?.ToString("O"))}" +
                   $"&endutc={WebUtility.UrlEncode(endUtc?.ToString("O"))}" +
                   $"&alerttype={WebUtility.UrlEncode(alerttype)}" +
-                  AppendAccount(asAccount);
+                  AppendAccount(asAccount, true);
             return RetrieveResponse<List<AlertLog>>(url, verb_Read);
         }
 
