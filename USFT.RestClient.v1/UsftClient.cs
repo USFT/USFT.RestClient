@@ -130,8 +130,8 @@
                 throw new Exception("ApiKey required.");
             }
 
-            Username = username;
-            ApiKey = apiKey;
+            Username = username.Trim();
+            ApiKey = apiKey.Trim();
             Authentication = authMode;
             SetUriBase(uriBase_default);
         }
