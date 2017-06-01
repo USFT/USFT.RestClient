@@ -166,10 +166,13 @@
         /// <exception cref="RestException">Contains details of an unsuccessful request</exception>
         public bool TestConnection(Account AsAccount = null)
         {
-            HttpWebResponse response = AttemptRequest(uriPath_Test + AppendAccount(AsAccount), verb_Read);
-            if (response.StatusCode == HttpStatusCode.OK)
-                return true;
-            else throw RestException.Create(response);
+            using(HttpWebResponse response = AttemptRequest(uriPath_Test + AppendAccount(AsAccount), verb_Read))
+            {
+                if (response.StatusCode == HttpStatusCode.OK)
+                    return true;
+                else 
+                    throw RestException.Create(response);
+            }
         }
 
         /// <summary>
@@ -670,15 +673,20 @@
         public T RetrieveResponse<T>(string Path, string Method = "GET", object BodyContent = null,
             bool DoAuthentication = true)
         {
-            HttpWebResponse response = AttemptRequest(Path, Method, BodyContent, DoAuthentication);
-            if (response.StatusCode == HttpStatusCode.OK)
+            using(HttpWebResponse response = AttemptRequest(Path, Method, BodyContent, DoAuthentication))
             {
-                StreamReader reader = new StreamReader(response.GetResponseStream());
-                string content = reader.ReadToEnd();
-                T ret = JsonConvert.DeserializeObject<T>(content);
-                return ret;
+                if (response.StatusCode == HttpStatusCode.OK)
+                {
+                    StreamReader reader = new StreamReader(response.GetResponseStream());
+                    string content = reader.ReadToEnd();
+                    T ret = JsonConvert.DeserializeObject<T>(content);
+                    return ret;
+                }
+                else 
+                {
+                    throw RestException.Create(response);
+                }
             }
-            else throw RestException.Create(response);
         }
 
         #endregion
