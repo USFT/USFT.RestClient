@@ -2,10 +2,6 @@
 {
     using System;
     using System.Collections.Generic;
-    using System.Linq;
-    using System.Text.RegularExpressions;
-    using Newtonsoft.Json;
-    using Newtonsoft.Json.Converters;
 
     /// <summary>
     /// The possible types of fence for automatically-refreshing Address Fences.
@@ -16,17 +12,14 @@
         /// Do not use this value. This is returned for some entries which do not have a proper Fence Type set.
         /// </summary>
         Unknown,
-
         /// <summary>
         /// The Address Fence will redraw itself as a circle of radius [Dims] around the Address when the Address moves
         /// </summary>
         Circle,
-
         /// <summary>
         /// The Address Fence will redraw itself as a square of dimensions [Dims]x[Dims] centered on the Address when the Address moves.
         /// </summary>
         Square,
-
         /// <summary>
         /// The Address Fence will redraw itself as a rectangle of dimensions [Dims] centered on the Address when the Address moves.
         /// </summary>
@@ -42,228 +35,26 @@
         /// Do not use this value. This is returned for some entries which do not have a proper Fence Unit Type set.
         /// </summary>
         Unknown,
-
         /// <summary>
         /// The Address Fence dimensions will be measured in feet.
         /// </summary>
         Feet,
-
         /// <summary>
         /// The Address Fence dimensions will be measured in yards.
         /// </summary>
         Yards,
-
         /// <summary>
         /// The Address Fence dimensions will be measured in miles.
         /// </summary>
         Miles,
-
         /// <summary>
         /// The Address Fence dimensions will be measured in meters.
         /// </summary>
         Meters,
-
         /// <summary>
         /// The Address Fence dimensions will be measured in kilometers.
         /// </summary>
         Kilometers
-    };
-
-    /// <summary>
-    /// The supported Message Types for Device Messages
-    /// </summary>
-    public enum MessageTypes
-    {
-        /// <summary>
-        /// Do not use this value. This is returned for some entries which do not have a proper Message Type set.
-        /// </summary>
-        Unknown,
-
-        /// <summary>
-        /// Command: The device receiving this message should lock its doors.
-        /// </summary>
-        LockDoor,
-
-        /// <summary>
-        /// Command: The device receiving this message should unlock its doors.
-        /// </summary>
-        UnlockDoor,
-
-        /// <summary>
-        /// Command: The device receiving this message should honk its horn.
-        /// </summary>
-        HonkHorn,
-
-        /// <summary>
-        /// Command: The device receiving this message should disable its engine.
-        /// </summary>
-        DisableEngine,
-
-        /// <summary>
-        /// Command: The device receiving this message should enable its engine.
-        /// </summary>
-        EnableEngine,
-
-        /// <summary>
-        /// Command: The device receiving this message should start its engine.
-        /// </summary>
-        StartEngine,
-
-        /// <summary>
-        /// Command: The device receiving this message should immediately transmit a location update.
-        /// </summary>
-        ForceTransmit,
-
-        /// <summary>
-        /// Command: The device receiving this message should immediately resync with available satellites.
-        /// </summary>
-        Resync,
-
-        /// <summary>
-        /// Command: An paramaterized command that varies depending on device.
-        /// </summary>
-        AdHoc = 14,
-
-        /// <summary>
-        /// Message: The device receiving this message should display the provided text to the driver.
-        /// </summary>
-        Text = 100,
-
-        /// <summary>
-        /// Message: This is a message from the driver of the device to the user of the API or Webclient.
-        /// </summary>
-        FromDevice = 101
-    };
-
-    /// <summary>
-    /// The Status of an existing Device Message. Generally, this should not be set by API users.
-    /// </summary>
-    public enum MessageStatuses
-    {
-        /// <summary>
-        /// A message request initiated on the webapp has been received and is awaiting processing.
-        /// </summary>
-        WebappReceived = 0x00,
-
-        /// <summary>
-        /// A message request initiated on the webapp has been received and is in processing.
-        /// </summary>
-        WebappProcessing = 0x01,
-
-        /// <summary>
-        /// A message request initiated on the webapp has been processed and sent.
-        /// </summary>
-        WebappProcessed = 0x02,
-
-        /// <summary>
-        /// A message request initiated on the webapp has encountered an unknown error.
-        /// </summary>
-        WebappErrorUnknown = 0x03,
-
-        /// <summary>
-        /// A message request initiated on the webapp has encountered an error with its SIM Number.
-        /// </summary>
-        WebappErrorSIMNumber = 0x04,
-
-        /// <summary>
-        /// A message request initiated on the webapp has encountered an error retrieving its MSISDN.
-        /// </summary>
-        WebappErrorMSISDN = 0x05,
-
-        /// <summary>
-        /// A message request initiated on the webapp has encountered an error: the device command requested is not supported.
-        /// </summary>
-        WebappErrorCommand = 0x06,
-
-        /// <summary>
-        /// A message request initiated on the webapp has encountered an error with smtp configuration.
-        /// </summary>
-        WebappErrorNoEmailAddress = 0x07,
-
-        /// <summary>
-        /// A message request initiated on the webapp has encountered an error with the telematic APIs.
-        /// </summary>
-        WebappErrorDeviceSIMInformation = 0x08,
-
-        /// <summary>
-        /// The text message has been sent to the device.
-        /// </summary>
-        TextSent = 40,
-
-        /// <summary>
-        /// The text message has been read by the device.
-        /// </summary>
-        TextRead = 41,
-
-        /// <summary>
-        /// The text message has been deleted by the device.
-        /// </summary>
-        TextDeleted = 42,
-
-        /// <summary>
-        /// A message request initiated through the API has been received and is being processed.
-        /// </summary>
-        APIProcessing = 51,
-
-        /// <summary>
-        /// A message request initiated through the API has been processed and sent.
-        /// </summary>
-        APIProcessed = 52,
-
-        /// <summary>
-        /// A message request initiated through the API has encountered an unknkown error.
-        /// </summary>
-        APIErrorUnknown = 53,
-
-        /// <summary>
-        /// A message request initiated through the API has encountered an error with its SIM Number.
-        /// </summary>
-        APIErrorSimNumber = 54,
-
-        /// <summary>
-        /// A message request initiated through the API has encountered an error with its MSISDN.
-        /// </summary>
-        APIErrorMSISDN = 55,
-
-        /// <summary>
-        /// A message request initiated through the API has encountered an error: the device command requested is not supported.
-        /// </summary>
-        APIErrorCommand = 56,
-
-        /// <summary>
-        /// A message request initiated through the API has encountered an error with SMTP configuration.
-        /// </summary>
-        APIErrorNoEmail = 57,
-
-        /// <summary>
-        /// A message request initiated through the API has encountered an error with the telematic API.
-        /// </summary>
-        APIErrorNoDeviceSimInfo = 58,
-
-        /// <summary>
-        /// A message request initiated through the API for a X5-Nav has been created and is awaiting processing.
-        /// </summary>
-        APIX5Created = 101,
-
-        /// <summary>
-        /// A message request initiated through the API for a X5-Nav has been processed and sent.
-        /// </summary>
-        APIX5Sent = 102,
-
-        /// <summary>
-        /// A message request initiated through the API for a X5-Nav has been received and acknowledged.
-        /// </summary>
-        APIX5Ack = 103,
-
-        /// <summary>
-        /// A message request initiated through the API for a X5-Nav has been answered.
-        /// </summary>
-        APIX5Answered = 104,
-
-        /// <summary>
-        /// A message request initiated through the API for a X5-Nav has prompted a response.
-        /// </summary>
-        APIX5Responded = 105
     };
 
     /// <summary>
@@ -306,57 +97,6 @@
         Processed = 2,
         Error = 3
     };
-
-    /// <summary>
-    /// This class represents Messages sent to active Devices, usually commands for the vehicle or text for the driver.
-    /// </summary>
-    public class DeviceMessage
-    {
-        /// <summary>
-        /// The AccountId associated with the Message
-        /// </summary>
-        public ulong AccountId;
-
-        /// <summary>
-        /// The DeviceId targetted by the Message, or the originator of a Message sent from the device to the API.
-        /// </summary>
-        public ulong DeviceId;
-
-        /// <summary>
-        /// A unique identifier for the DeviceMessage. Use this when making further API calls specific to this message.
-        /// </summary>
-        public ulong MessageId;
-
-        /// <summary>
-        /// The Type of the Message. This must be set to send a successful message.
-        /// </summary>
-        public MessageTypes MessageType;
-
-        /// <summary>
-        /// The Status of the Message. If this is set prior to sending, it will be ignored.
-        /// </summary>
-        public MessageStatuses MessageStatus;
-
-        /// <summary>
-        /// The Text of a Message to be read by the driver.
-        /// </summary>
-        public string MessageText;
-
-        /// <summary>
-        /// The time the Message was sent.
-        /// </summary>
-        public DateTime? TimeSent;
-
-        /// <summary>
-        /// A list of prepared responses to the message. If set, this allows users of the X5-Nav to respond with the push of a button.
-        /// </summary>
-        public List<string> CannedResponses = new List<string>();
-
-        /// <summary>
-        /// A response supplied by a X5-Nav.
-        /// </summary>
-        public string X5Response;
-    }
 
     /// <summary>
     /// This class represents USFT Devices.
@@ -416,59 +156,39 @@
     }
 
     /// <summary>
-    /// This class represents Address Fences, optional extensions of Addresses that automatically create and move Geofence Alerts centered on Addresses.
+    /// This class represents vehicle information for a related device.
     /// </summary>
-    public class AddressFence
+    public class Vehicle
     {
         /// <summary>
-        /// A unique identifier for the Address Fence. Use this when making further API calls specific to this Address Fence.
+        /// A unique identifier for the Device. Use this when making further API calls specific to this device.
         /// </summary>
-        public ulong AddressFenceId;
-
+        public ulong DeviceId;
         /// <summary>
-        /// The AccountId associated with this Address Fence.
+        /// VIN of vehicle
         /// </summary>
-        public ulong AccountId;
-
+        public string VIN;
         /// <summary>
-        /// The Address for this Address Fence. This must be set when creating a new Address Fence.
+        /// Fuel Card assigned to vehicle
         /// </summary>
-        public ulong AddressId;
-
+        public string FuelCardNumber;
         /// <summary>
-        /// The AlertId for the Alert created by this Address Fence. This should not be modified.
+        /// Miles
         /// </summary>
-        public ulong AlertId;
-
+        public ulong Miles;
         /// <summary>
-        /// The shape the Address Fence will generate when created, or when the Address is moved.
+        /// Hours
         /// </summary>
-        public FenceTypes? FenceType;
+        public ulong Hours;
 
-        /// <summary>
-        /// The dimensions of the Address Fence, in the format "[Number]" for circles and squares, or "[Number]x[Number]" for rectangles.
-        /// </summary>
-        public string FenceDims;
-
-        /// <summary>
-        /// The unit to be used when interpreting FenceDims.
-        /// </summary>
-        public FenceUnitTypes? FenceUnits;
-
-        public AddressFence()
+        public Vehicle() { }
+        public Vehicle(ulong DeviceId, string VIN, string FuelCardNumber, ulong Miles, ulong Hours)
         {
-        }
-
-        public AddressFence(ulong AccountId, ulong AddressFenceId, ulong AddressId, ulong AlertId, FenceTypes FenceType,
-            string FenceDims, FenceUnitTypes FenceUnits)
-        {
-            this.AccountId = AccountId;
-            this.AddressFenceId = AddressFenceId;
-            this.AddressId = AddressId;
-            this.AlertId = AlertId;
-            this.FenceType = FenceType;
-            this.FenceDims = FenceDims;
-            this.FenceUnits = FenceUnits;
+            this.DeviceId = DeviceId;
+            this.VIN = VIN;
+            this.FuelCardNumber = FuelCardNumber;
+            this.Miles = Miles;
+            this.Hours = Hours;
         }
     }
 
@@ -539,49 +259,55 @@
     }
 
     /// <summary>
-    /// This class represents an Address Group in your account
+    /// This class represents Address Fences, optional extensions of Addresses that automatically create and move Geofence Alerts centered on Addresses.
     /// </summary>
-    public class AddressGroup
+    public class AddressFence
     {
+        /// <summary>
+        /// A unique identifier for the Address Fence. Use this when making further API calls specific to this Address Fence.
+        /// </summary>
+        public ulong AddressFenceId;
         /// <summary>
         /// The AccountId associated with this Address Fence.
         /// </summary>
         public ulong AccountId;
-
         /// <summary>
-        /// A unique identifier for the Address Group. Use this when making further API calls specific to this Address Group.
+        /// The Address for this Address Fence. This must be set when creating a new Address Fence.
         /// </summary>
-        public ulong AddressGroupId;
-
+        public ulong AddressId;
         /// <summary>
-        /// The name assigned to this Address Group. This will show up in the Address Group editor in the webapp.
+        /// The AlertId for the Alert created by this Address Fence. This should not be modified.
         /// </summary>
-        public string Name;
-
+        public ulong AlertId;
         /// <summary>
-        /// A list of the AddressIds which belong to the Addresses in this Address Group. Addresses can be added or removed from the group by adding or removing their Ids from this List, then Updating the Address Group.
+        /// The shape the Address Fence will generate when created, or when the Address is moved.
         /// </summary>
-        public List<ulong> AddressIds = new List<ulong>();
-
-        public AddressGroup()
-        {
-        }
-
-        public AddressGroup(ulong AccountId, ulong AddressGroupId, string Name, List<ulong> AddressIds = null)
+        public FenceTypes? FenceType;
+        /// <summary>
+        /// The dimensions of the Address Fence, in the format "[Number]" for circles and squares, or "[Number]x[Number]" for rectangles.
+        /// </summary>
+        public string FenceDims;
+        /// <summary>
+        /// The unit to be used when interpreting FenceDims.
+        /// </summary>
+        public FenceUnitTypes? FenceUnits;
+        public AddressFence() { }
+        public AddressFence(ulong AccountId, ulong AddressFenceId, ulong AddressId, ulong AlertId, FenceTypes FenceType, string FenceDims, FenceUnitTypes FenceUnits)
         {
             this.AccountId = AccountId;
-            this.AddressGroupId = AddressGroupId;
-            this.Name = Name;
-            if (AddressIds == null)
-                this.AddressIds = new List<ulong>();
-            else this.AddressIds = AddressIds;
+            this.AddressFenceId = AddressFenceId;
+            this.AddressId = AddressId;
+            this.AlertId = AlertId;
+            this.FenceType = FenceType;
+            this.FenceDims = FenceDims;
+            this.FenceUnits = FenceUnits;
         }
     }
 
     /// <summary>
     /// This class represents the location of a Device
     /// </summary>
-    public class DeviceLocation
+    public class Location
     {
         /// <summary>
         /// The AccountId associated with the Device
@@ -648,11 +374,11 @@
         /// </summary>
         public int Power;
 
-        public DeviceLocation()
+        public Location()
         {
         }
 
-        public DeviceLocation(ulong AccountId
+        public Location(ulong AccountId
             , ulong DeviceId
             , string DeviceName
             , double Latitude
@@ -679,33 +405,6 @@
             this.LastUpdated = LastUpdated;
             this.OutputFlags = OutputFlags;
             this.Power = Power;
-        }
-    }
-
-    /// <summary>
-    /// This class represents a point on the map for classes which require large collections of points
-    /// </summary>
-    public class MapPoint
-    {
-        /// <summary>
-        /// The Latitude value for the point
-        /// </summary>
-        public double Latitude;
-
-        /// <summary>
-        /// The Longitude value for the point
-        /// </summary>
-        public double Longitude;
-
-        public MapPoint(double Latitude, double Longitude)
-        {
-            this.Latitude = Latitude;
-            this.Longitude = Longitude;
-        }
-
-        public override string ToString()
-        {
-            return Latitude.ToString() + "," + Longitude.ToString();
         }
     }
 
@@ -863,57 +562,6 @@
         /// The content of the label text this service call will display in the webapp
         /// </summary>
         public string MarkerName;
-    }
-
-    /// <summary>
-    /// This class represents a Dispatch message sent to a device in your account
-    /// </summary>
-    public class Dispatch
-    {
-        /// <summary>
-        /// The AccountId associated with this Dispatch
-        /// </summary>
-        public ulong AccountId;
-
-        /// <summary>
-        /// A unique identifier for this Dispatch. Use this when making API calls specific to this Dispatch.
-        /// </summary>
-        public ulong DispatchId;
-
-        /// <summary>
-        /// The Device targetted by this Dispatch.
-        /// </summary>
-        public ulong DeviceId;
-
-        /// <summary>
-        /// (Optional) The Latitude targetted by the Dispatch. If Latitude and Longitude are left null, the API will attempt to find their values using the provided Address information.
-        /// </summary>
-        public double? Latitude;
-
-        /// <summary>
-        /// (Optional) The Longitude targetted by the Dispatch. If Latitude and Longitude are left null, the API will attempt to find their values using the provided Address information.
-        /// </summary>
-        public double? Longitude;
-
-        /// <summary>
-        /// The Address targetted by the Dispatch, for all devices EXCEPT the X5-Navs
-        /// </summary>
-        public string AddressBlock;
-
-        /// <summary>
-        /// The Street targetted by the Dispatch, ONLY for X5-Navs
-        /// </summary>
-        public string X5Street;
-
-        /// <summary>
-        /// The City targetted by the Dispatch, ONLY for X5-Navs
-        /// </summary>
-        public string X5City;
-
-        /// <summary>
-        /// The State targetted by the Dispatch, ONLY for X5-Navs
-        /// </summary>
-        public string X5State;
     }
 
     /// <summary>
@@ -1126,86 +774,4 @@
         /// </summary>
         public DateTime OcurredOn;
     }
-
-    /// <summary>
-        /// Represents an alert
-        /// </summary>
-        public class Alert
-        {
-            public enum AlertTypes
-            {
-                Geofence,
-                Idle,
-                Ignition,
-                Maintenance,
-                Panic,
-                Polyfence,
-                Power,
-                Radius,
-                Route,
-                Speed,
-                Timeout
-            }
-
-            public uint AlertId;
-            public uint AccountId;
-            public string AlertName;
-
-            [JsonConverter(typeof (StringEnumConverter))] public AlertTypes AlertType;
-            public string Color;
-            public double? Distance;
-            public double[][] Fence;
-            public double? IdleThreshold;
-            public bool? IgnitionOff;
-            public bool? IgnitionOn;
-            public double? MaintMeters;
-            public double? MaintSeconds;
-            public bool? PolyOnEnter;
-            public bool? PolyOnExit;
-            public int? PowerMinimum;
-            public double? Radius;
-            public bool? RadiusOnEnter;
-            public bool? RadiusOnExit;
-            public bool? RouteOnEnter;
-            public bool? RouteOnExit;
-            public string ShorthandEnd;
-            public string ShorthandStart;
-            public int? SpeedThreshold;
-            public double? TimeoutThreshold;
-            public double? WarnMeters;
-            public double? WarnSeconds;
-            public List<AlertMaintenance> MaintConditions = new List<AlertMaintenance>();
-            public List<Recipient> Recipients = new List<Recipient>();
-        }
-
-        /// <summary>
-        /// Represents a recipient associated with an alert
-        /// </summary>
-        public class Recipient
-        {
-            public bool SendEmail;
-            public bool SendSms;
-            public long RecipientId;
-            public string Name;
-            public string Email;
-            public string PhoneNumber;
-            public string SMS;
-            public bool isDriver;
-            public string Fob;
-        }
-
-        /// <summary>
-        /// Represents maintenance details associated with an alert
-        /// </summary>
-        public class AlertMaintenance
-        {
-            public long? AlertMaintenanceId;
-            public long AlertId;
-            public string ConditionName;
-            public bool OneTime;
-            public double? AlertMeters;
-            public double? AlertSeconds;
-            public double? WarnMeters;
-            public double? WarnSeconds;
-        }
 }

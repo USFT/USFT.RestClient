@@ -17,9 +17,9 @@
         /// <summary>
         /// Proxy to use for all HttpWebRequests
         /// </summary>
-        public WebProxy Proxy = null;
+        private WebProxy Proxy = null;
 
-        public AuthenticationMode Authentication = AuthenticationMode.USFT;
+        private AuthenticationMode Authentication = AuthenticationMode.USFT;
 
         /// <summary>
         /// Authentication mode to use for requests. USFT uses a secure API key and a hash, Basic uses username:password.
@@ -44,7 +44,6 @@
 
         // this standard was adopted from microsoft live, as detailed inhttp://msdn.microsoft.com/en-us/library/live/hh243648.aspx#http_verbs
         private const string verb_Create = "POST";
-
         private const string verb_Read = "GET";
         private const string verb_Update = "PUT";
         private const string verb_Delete = "DELETE";
@@ -56,6 +55,10 @@
         private const string uriPath_ReadDevice = "/Device/{0}";
         private const string uriPath_UpdateDevice = "/Device";
         private const string uriPath_ReadAllDevices = "/Device";
+
+        private const string uriPath_ReadVehicle = "/Vehicle?deviceid={0}";
+        private const string uriPath_UpdateVehicle = "/Vehicle";
+        private const string uriPath_ReadAllVehicles = "/Vehicle";
 
         private const string uriPath_ReadLocationData = "/Location/{0}";
         private const string uriPath_ReadAllLocationData = "/Location";
@@ -69,17 +72,17 @@
         private const string uriPath_CreateAddress = "/Address";
         private const string uriPath_DeleteAddress = "/Address/{0}";
 
-        private const string uriPath_DeleteAlert = "/Alert/{0}";
-        private const string uriPath_ReadAlert = "/Alert/{0}";
-        private const string uriPath_ReadAlertByType = "/Alert?alerttype={0}";
-        private const string uriPath_ReadAlerts = "/Alert";
-        private const string uriPath_UpdateAlert = "/Alert";
+        private const string uriPath_CreateAddressFence = "/AddressFence";
+        private const string uriPath_DeleteAddressFence = "/AddressFence/{0}";
+        private const string uriPath_ReadAddressFence = "/AddressFence/{0}";
+        private const string uriPath_ReadAddressFences = "/AddressFence";
+        private const string uriPath_ReadAddressFencesParams = "/AddressFence?addressid={0}&alertid={1}";
+        private const string uriPath_UpdateAddressFence = "/AddressFence";
+
         private const string uriPath_ReadAlertLogs = "/AlertLog";
 
         private const string uriPath_ImmediateReport = "/ImmediateReport/{0}";
-
-        private const string uriPath_ImmediateReportFromTo =
-            "/ImmediateReport/historyfromto?from={0}&to={1}&interval={2}";
+        private const string uriPath_ImmediateReportFromTo = "/ImmediateReport/historyfromto?from={0}&to={1}&interval={2}";
 
         private const string uriPath_CreateServiceCall = "/ServiceCall";
         private const string uriPath_DeleteServiceCall = "/ServiceCall/{0}";
@@ -250,6 +253,45 @@
 
         #endregion
 
+        #region Vehicles
+
+        /// <summary>
+        /// Gets information for a single vehicle from USFT
+        /// </summary>
+        /// <param name="DeviceId">Device ID of the device</param>
+        /// <param name="AsAccount">(Optional) If this parameter is included, the method will be run on behalf of the specified child Account.</param>
+        /// <returns>The requested Vehicle</returns>
+        /// <exception cref="RestException">Contains details of an unsuccessful request</exception>
+        public Vehicle GetVehicle(ulong DeviceId, Account AsAccount = null)
+        {
+            return RetrieveResponse<Vehicle>(string.Format(uriPath_ReadVehicle, DeviceId) + AppendAccount(AsAccount), verb_Read);
+        }
+
+        /// <summary>
+        /// Gets information for all vehicles viewable by your account
+        /// </summary>
+        /// <param name="AsAccount">(Optional) If this parameter is included, the method will be run on behalf of the specified child Account.</param>
+        /// <returns>The list of all devices viewable by your account</returns>
+        /// <exception cref="RestException">Contains details of an unsuccessful request</exception>
+        public List<Vehicle> GetVehicles(Account AsAccount = null)
+        {
+            return RetrieveResponse<List<Vehicle>>(uriPath_ReadAllVehicles + AppendAccount(AsAccount), verb_Read);
+        }
+
+        /// <summary>
+        /// Update a vehicles's entry with new information.
+        /// </summary>
+        /// <param name="VehicleToUpdate">A device entry with modified name, flag color, or text color. All other changes will be ignored.</param>
+        /// <param name="AsAccount">(Optional) If this parameter is included, the method will be run on behalf of the specified child Account.</param>
+        /// <returns>The device's entry, as of the most recent update.</returns>
+        /// <exception cref="RestException">Contains details of an unsuccessful request</exception>
+        public Vehicle UpdateVehicle(Vehicle VehicleToUpdate, Account AsAccount = null)
+        {
+            return RetrieveResponse<Vehicle>(uriPath_UpdateVehicle + AppendAccount(AsAccount), verb_Update, VehicleToUpdate);
+        }
+
+        #endregion
+
         #region DeviceLocations
 
         /// <summary>
@@ -258,10 +300,9 @@
         /// <returns>A list of device ids and their most recent gps information</returns>
         /// <param name="AsAccount">(Optional) If this parameter is included, the method will be run on behalf of the specified child Account.</param>
         /// <exception cref="RestException">Contains details of an unsuccessful request</exception>
-        public List<DeviceLocation> GetDeviceLocations(Account AsAccount = null)
+        public List<Location> GetDeviceLocations(Account AsAccount = null)
         {
-            return RetrieveResponse<List<DeviceLocation>>(uriPath_ReadAllLocationData + AppendAccount(AsAccount),
-                verb_Read);
+            return RetrieveResponse<List<Location>>(uriPath_ReadAllLocationData + AppendAccount(AsAccount), verb_Read);
         }
 
         /// <summary>
@@ -271,13 +312,13 @@
         /// <param name="AsAccount">(Optional) If this parameter is included, the method will be run on behalf of the specified child Account.</param>
         /// <returns>The latest gps information for the specified Device</returns>
         /// <exception cref="RestException">Contains details of an unsuccessful request</exception>
-        public DeviceLocation GetDeviceLocation(ulong Id, Account AsAccount = null)
+        public Location GetDeviceLocation(ulong Id, Account AsAccount = null)
         {
-            return RetrieveResponse<DeviceLocation>(
+            return RetrieveResponse<Location>(
                 string.Format(uriPath_ReadLocationData, Id) + AppendAccount(AsAccount), verb_Read);
         }
 
-        public bool UpdateDeviceLocation(DeviceLocation UpdatedLocation)
+        public bool UpdateDeviceLocation(Location UpdatedLocation)
         {
             return RetrieveResponse<bool>(uriPath_UpdateLocationData, verb_Update, UpdatedLocation);
         }
@@ -313,20 +354,6 @@
         {
             return RetrieveResponse<List<Address>>(
                 string.Format(uriPath_ReadAddressesByGroup, Id) + AppendAccount(AsAccount, true), verb_Read);
-        }
-
-        /// <summary>
-        /// Retrives all addresses associated with a certain Address Group
-        /// </summary>
-        /// <param name="Id">The Address Group to search for Addresses</param>
-        /// <param name="AsAccount">(Optional) If this parameter is included, the method will be run on behalf of the specified child Account.</param>
-        /// <returns>A List of Address entries associated with the Address Group</returns>
-        /// <exception cref="RestException">A RestException containing the information returned by the server for an unsuccessful request</exception>
-        public List<Address> GetAddressesByGroup(AddressGroup Group, Account AsAccount = null)
-        {
-            return RetrieveResponse<List<Address>>(
-                string.Format(uriPath_ReadAddressesByGroup, Group.AddressGroupId) + AppendAccount(AsAccount, true),
-                verb_Read);
         }
 
         /// <summary>
@@ -396,49 +423,88 @@
 
         #endregion
 
+        #region Address Fences
+        /// <summary>
+        /// Retrieves Address Fences from your account
+        /// </summary>
+        /// <param name="AddressId">If specified, it filters for Fences associated with a specific Address ID</param>
+        /// <param name="AlertId">If specified, it filters for the Fence associated with a specific Alert ID</param>
+        /// <param name="AsAccount">(Optional) If this parameter is included, the method will be run on behalf of the specified child Account.</param>
+        /// <returns>The Address Fences in your account that match any provided parameters</returns>
+        /// <exception cref="RestException">A RestException containing the information returned by the server for an unsuccessful request</exception>
+        public List<AddressFence> GetAddressFences(ulong AddressId = 0, ulong AlertId = 0, Account AsAccount = null)
+        {
+            //strictly speaking, we can always use the bottom request, but why not shave off a few bytes?
+            if (AddressId == 0 && AlertId == 0)
+                return RetrieveResponse<List<AddressFence>>(uriPath_ReadAddressFences + AppendAccount(AsAccount), verb_Read);
+            else
+                return RetrieveResponse<List<AddressFence>>(string.Format(uriPath_ReadAddressFencesParams, AddressId, AlertId) + AppendAccount(AsAccount, true), verb_Read);
+        }
+
+        /// <summary>
+        /// Retrieves a specific Address Fence from your account
+        /// </summary>
+        /// <param name="AddressFenceId">ID of the Address Fence to retrieve</param>
+        /// <param name="AsAccount">(Optional) If this parameter is included, the method will be run on behalf of the specified child Account.</param>
+        /// <returns>The Address Fence for the given ID</returns>
+        /// <exception cref="RestException">A RestException containing the information returned by the server for an unsuccessful request</exception>
+        public AddressFence GetAddressFence(ulong AddressFenceId, Account AsAccount = null)
+        {
+            return RetrieveResponse<AddressFence>(uriPath_ReadAddressFence + AppendAccount(AsAccount), verb_Read);
+        }
+
+        /// <summary>
+        /// Updates an existing Address Fence in your account
+        /// </summary>
+        /// <param name="ToUpdate">The Address Fence to update, with changes in place</param>
+        /// <param name="AsAccount">(Optional) If this parameter is included, the method will be run on behalf of the specified child Account.</param>
+        /// <returns>The Address Fence after its update</returns>
+        /// <exception cref="RestException">A RestException containing the information returned by the server for an unsuccessful request</exception>
+        public AddressFence UpdateAddressFence(AddressFence ToUpdate, Account AsAccount = null)
+        {
+            return RetrieveResponse<AddressFence>(uriPath_UpdateAddressFence + AppendAccount(AsAccount), verb_Update, ToUpdate);
+        }
+
+        /// <summary>
+        /// Create a new Address Fence for your account
+        /// </summary>
+        /// <param name="ToCreate">The Address Fence to create. AddressId must be set to an existing address, AlertId must be set to 0.</param>
+        /// <param name="AsAccount">(Optional) If this parameter is included, the method will be run on behalf of the specified child Account.</param>
+        /// <returns>The new Address Fence created in your account</returns>
+        /// <exception cref="RestException">A RestException containing the information returned by the server for an unsuccessful request</exception>
+        public AddressFence CreateAddressFence(AddressFence ToCreate, Account AsAccount = null)
+        {
+            return RetrieveResponse<AddressFence>(uriPath_CreateAddressFence + AppendAccount(AsAccount), verb_Create, ToCreate);
+        }
+
+        /// <summary>
+        /// Delete an existing Address Fence in your account
+        /// </summary>
+        /// <param name="ToDelete">The Address Fence to delete</param>
+        /// <param name="AsAccount">(Optional) If this parameter is included, the method will be run on behalf of the specified child Account.</param>
+        /// <returns>True if the deletion succeeds, false otherwise</returns>
+        /// <exception cref="RestException">A RestException containing the information returned by the server for an unsuccessful request</exception>
+        public bool DeleteAddressFence(AddressFence ToDelete, Account AsAccount = null)
+        {
+            return DeleteAddressFence(ToDelete.AddressFenceId, AsAccount);
+        }
+
+        /// <summary>
+        /// Delete an existing Address Fence in your account
+        /// </summary>
+        /// <param name="AddressFenceId">The ID of the Address Fence to delete</param>
+        /// <param name="AsAccount">(Optional) If this parameter is included, the method will be run on behalf of the specified child Account.</param>
+        /// <returns>True if the deletion succeeds, false otherwise</returns>
+        /// <exception cref="RestException">A RestException containing the information returned by the server for an unsuccessful request</exception>
+        public bool DeleteAddressFence(ulong AddressFenceId, Account AsAccount = null)
+        {
+            return RetrieveResponse<bool>(string.Format(uriPath_DeleteAddressFence, AddressFenceId) + AppendAccount(AsAccount), verb_Delete);
+        }
+        #endregion
+
         #region Alerts
 
-        public Alert GetAlert(ulong AlertId, Account AsAccount = null)
-        {
-            return RetrieveResponse<Alert>(string.Format(uriPath_ReadAlert, AlertId) + AppendAccount(AsAccount),
-                verb_Read);
-        }
-
-        public List<Alert> GetAlerts(string alerttype = null, Account AsAccount = null)
-        {
-            if (string.IsNullOrEmpty(alerttype))
-                return RetrieveResponse<List<Alert>>(uriPath_ReadAlerts + AppendAccount(AsAccount), verb_Read);
-            else
-                return RetrieveResponse<List<Alert>>(
-                    string.Format(uriPath_ReadAlertByType, WebUtility.UrlEncode(alerttype)) +
-                    AppendAccount(AsAccount, true), verb_Read);
-        }
-
-        public Alert UpdateAlert(Alert ToUpdate, Account AsAccount = null)
-        {
-            return RetrieveResponse<Alert>(uriPath_UpdateAlert + AppendAccount(AsAccount), verb_Update, ToUpdate);
-        }
-
-        public bool DeleteAlert(Alert ToDelete, Account AsAccount = null)
-        {
-            return DeleteAlert(ToDelete.AlertId, AsAccount);
-        }
-
-        public bool DeleteAlert(ulong AlertId, Account AsAccount = null)
-        {
-            return RetrieveResponse<bool>(string.Format(uriPath_DeleteAlert, AlertId) + AppendAccount(AsAccount),
-                verb_Delete);
-        }
-
-        public List<AlertLog> GetAlertLogs(
-            ulong? alertid = null, 
-            ulong? deviceid = null, 
-            bool? canEnterExit = null, 
-            bool? exiting = null, 
-            DateTime? startUtc = null, 
-            DateTime? endUtc = null, 
-            string alerttype = null, 
-            Account asAccount = null)
+        public List<AlertLog> GetAlertLogs(ulong? alertid = null, ulong? deviceid = null, bool? canEnterExit = null, bool? exiting = null, DateTime? startUtc = null, DateTime? endUtc = null, string alerttype = null, Account asAccount = null)
         {
             var url = uriPath_ReadAlertLogs +
                   $"?alertid={alertid}" +
@@ -500,18 +566,18 @@
 
         #region ImmediateReports
 
-        public List<DeviceLocation> GetHistory24(List<ulong> DeviceIds = null, Account AsAccount = null)
+        public List<Location> GetHistory24(List<ulong> DeviceIds = null, Account AsAccount = null)
         {
             if (DeviceIds == null || DeviceIds.Count() == 0)
-                return RetrieveResponse<List<DeviceLocation>>(
+                return RetrieveResponse<List<Location>>(
                     string.Format(uriPath_ImmediateReport, "history24") + AppendAccount(AsAccount), verb_Read);
             else
-                return RetrieveResponse<List<DeviceLocation>>(
+                return RetrieveResponse<List<Location>>(
                     string.Format(uriPath_ImmediateReport, "history24") + AppendAccount(AsAccount), "POST",
                     string.Join(",", DeviceIds));
         }
 
-        public List<DeviceLocation> GetHistoryFromTo(List<ulong> DeviceIds = null, DateTime? From = null,
+        public List<Location> GetHistoryFromTo(List<ulong> DeviceIds = null, DateTime? From = null,
             DateTime? To = null, uint? Interval = null, Account AsAccount = null)
         {
             string f = "", t = "";
@@ -520,11 +586,11 @@
             if (To.HasValue)
                 t = WebUtility.UrlEncode(To.Value.ToUniversalTime().ToString("yyyy'-'MM'-'dd'T'HH':'mm':'ss'.'fffK"));
             if (DeviceIds == null || DeviceIds.Count() == 0)
-                return RetrieveResponse<List<DeviceLocation>>(
+                return RetrieveResponse<List<Location>>(
                     string.Format(uriPath_ImmediateReportFromTo, f, t, Interval) + AppendAccount(AsAccount, true),
                     verb_Read);
             else
-                return RetrieveResponse<List<DeviceLocation>>(
+                return RetrieveResponse<List<Location>>(
                     string.Format(uriPath_ImmediateReportFromTo, f, t, Interval) + AppendAccount(AsAccount, true),
                     "POST", string.Join(",", DeviceIds));
         }
@@ -532,6 +598,11 @@
         #endregion
 
         #region Account Info
+
+        public Account GetAccount()
+        {
+            return RetrieveResponse<Account>(string.Format(uriPath_ReadAccount, "this"), verb_Read);
+        }
 
         public Account GetAccount(ulong AccountId)
         {
@@ -564,8 +635,7 @@
 
         #region Networking methods
 
-        public HttpWebResponse AttemptRequest(string Path, string Method, string PostString, bool DoAuthentication,
-            DateTime? dateTimeOverride = null)
+        private HttpWebResponse AttemptRequest(string Path, string Method, string PostString, bool DoAuthentication, DateTime? dateTimeOverride = null)
         {
             string address = uriBase + Path;
 
@@ -634,7 +704,7 @@
             catch (WebException exc)
             {
                 if (exc.Response != null)
-                    throw RestException.Create((HttpWebResponse) exc.Response);
+                  throw RestException.Create((HttpWebResponse) exc.Response);
                 else
                     throw new RestException("No response generated", exc);
             }
@@ -652,12 +722,13 @@
         /// <param name="Method">HTTP Method string (Default "GET")</param>
         /// <param name="BodyContent">Object to send the request body</param>
         /// <returns>HttpWebResponse returned from the server</returns>
-        public HttpWebResponse AttemptRequest(string Path, string Method = "GET", object BodyContent = null,
-            bool DoAuthentication = true)
+        private HttpWebResponse AttemptRequest(string Path, string Method = "GET", object BodyContent = null, bool DoAuthentication = true)
         {
             string PostString = null;
+
             if (BodyContent != null)
                 PostString = JsonConvert.SerializeObject(BodyContent);
+
             return AttemptRequest(Path, Method, PostString, DoAuthentication);
         }
 
@@ -670,8 +741,7 @@
         /// <param name="BodyContent">Object to submit in the request body, usually for Creating or Updating records</param>
         /// <returns>Object returned by the database</returns>
         /// <exception cref="RestException">A RestException containing the information returned by the server for an unsuccessful request</exception>
-        public T RetrieveResponse<T>(string Path, string Method = "GET", object BodyContent = null,
-            bool DoAuthentication = true)
+        private T RetrieveResponse<T>(string Path, string Method = "GET", object BodyContent = null, bool DoAuthentication = true)
         {
             using(HttpWebResponse response = AttemptRequest(Path, Method, BodyContent, DoAuthentication))
             {
