@@ -87,11 +87,11 @@ namespace USFTRestToCSVService
             while(working)
             {
                 lastRetrieval = DateTime.UtcNow;
-                List<DeviceLocation> results = null;
+                List<Location> results = null;
 
                 try
                 {
-                    results = client.GetDeviceLocations();
+                    results = client.GetLocations();
                 }
                 catch(RestException exc)
                 {
