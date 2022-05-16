@@ -39,7 +39,7 @@ namespace USFT.RestClient.HistoryDownloader
             return string.Join(",", fields);
         }
 
-        internal static async Task Save(List<DeviceLocation> results, string destination = null)
+        internal static async Task Save(List<Location> results, string destination = null)
         {
             var format = GetFormatString();
             try

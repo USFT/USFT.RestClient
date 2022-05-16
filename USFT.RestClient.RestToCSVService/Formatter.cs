@@ -36,7 +36,7 @@ namespace USFTRestToCSVService
             return string.Join(",", fields);
         }
 
-        internal static async Task Save(List<DeviceLocation> results)
+        internal static async Task Save(List<Location> results)
         {
             var format = GetFormatString();
             try

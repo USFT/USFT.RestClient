@@ -63,7 +63,7 @@ namespace USFT.RestClient.HistoryDownloader
 
         private void PerformRequest()
         {
-            UsftClient client = new UsftClient(txtUser.Text, txtPassword.Text, UsftClient.AuthenticationMode.Basic);
+            UsftClient client = new UsftClient(txtUser.Text, txtPassword.Text, UsftClient.AuthenticationMode.USFT);
             Output("Testing connection...");
             var testResult = client.TestConnection();
             if(!testResult)
@@ -87,12 +87,12 @@ namespace USFT.RestClient.HistoryDownloader
             Output("File saved.");
         }
 
-        private List<DeviceLocation> GetResults(UsftClient client, DateTime requestedStart, DateTime requestedEnd)
+        private List<Location> GetResults(UsftClient client, DateTime requestedStart, DateTime requestedEnd)
         {
             bool breakDownRequestByHour = false;
             if(requestedEnd - requestedStart > TimeSpan.FromHours(1))
             {
-                var deviceList = client.GetDeviceLocations(); // retrieve the number of devices with recent updates
+                var deviceList = client.GetLocations(); // retrieve the number of devices with recent updates
                 if(breakDownRequestByHour = deviceList.Count > 50)
                 {
                     Output("Large account detected! Breaking request down hour by hour. This may take a little while.");
@@ -102,7 +102,7 @@ namespace USFT.RestClient.HistoryDownloader
             {
                 var start = requestedStart;
                 var limit = requestedEnd.AddHours(-1);
-                List<DeviceLocation> ret = new List<DeviceLocation>();
+                List<Location> ret = new List<Location>();
                 while(start < limit)
                 {
                     var end = start.AddHours(1).AddSeconds(-1);

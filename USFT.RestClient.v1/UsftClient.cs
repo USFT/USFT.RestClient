@@ -292,7 +292,7 @@
 
         #endregion
 
-        #region DeviceLocations
+        #region Locations
 
         /// <summary>
         /// Get the latest location update from all of your account's gps devices
@@ -300,7 +300,7 @@
         /// <returns>A list of device ids and their most recent gps information</returns>
         /// <param name="AsAccount">(Optional) If this parameter is included, the method will be run on behalf of the specified child Account.</param>
         /// <exception cref="RestException">Contains details of an unsuccessful request</exception>
-        public List<Location> GetDeviceLocations(Account AsAccount = null)
+        public List<Location> GetLocations(Account AsAccount = null)
         {
             return RetrieveResponse<List<Location>>(uriPath_ReadAllLocationData + AppendAccount(AsAccount), verb_Read);
         }
@@ -312,18 +312,18 @@
         /// <param name="AsAccount">(Optional) If this parameter is included, the method will be run on behalf of the specified child Account.</param>
         /// <returns>The latest gps information for the specified Device</returns>
         /// <exception cref="RestException">Contains details of an unsuccessful request</exception>
-        public Location GetDeviceLocation(ulong Id, Account AsAccount = null)
+        public Location GetLocation(ulong Id, Account AsAccount = null)
         {
             return RetrieveResponse<Location>(
                 string.Format(uriPath_ReadLocationData, Id) + AppendAccount(AsAccount), verb_Read);
         }
 
-        public bool UpdateDeviceLocation(Location UpdatedLocation)
+        public bool UpdateLocation(Location UpdatedLocation)
         {
             return RetrieveResponse<bool>(uriPath_UpdateLocationData, verb_Update, UpdatedLocation);
         }
 
-        public bool DeleteDeviceLocation(ulong Id, Account AsAccount = null)
+        public bool DeleteLocation(ulong Id, Account AsAccount = null)
         {
             return RetrieveResponse<bool>(string.Format(uriPath_DeleteLocationData, Id), verb_Delete);
         }
